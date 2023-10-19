@@ -84,3 +84,66 @@ class ViewController: UIViewController {
     }
 }
 
+/*
+ anyway 422
+ func postApi() {
+     let headers = [
+         "content-type": "multipart/form-data; boundary=---011000010111000001101001",
+         "X-RapidAPI-Key": "fb79120e60msh1950408d6631cb0p12fac3jsn67e5f4bcb7a0",
+         "X-RapidAPI-Host": "universal-background-removal.p.rapidapi.com"
+     ]
+     
+     let parameters = [
+         [
+             "name": "image",
+             "fileName": "people.jpeg",
+             "contentType": "application/octet-stream",
+             "file": "[object File]"
+         ]
+     ]
+     
+     let boundary = "---011000010111000001101001"
+     
+     var body = ""
+     
+     for param in parameters {
+         let paramName = param["name"]!
+         
+         body += "--\(boundary)\r\n"
+         body += "Content-Disposition:form-data; name=\"\(paramName)\""
+         
+         if let filename = param["fileName"] {
+             let contentType = param["contentType"]!
+             
+             if let fileURL = Bundle.main.url(forResource: filename, withExtension: nil), let fileData = try? Data(contentsOf: fileURL) {
+                 body += "; filename=\"\(filename)\"\r\n"
+                 body += "Content-Type: \(contentType)\r\n\r\n"
+                 body += String(data: fileData, encoding: .utf8) ?? ""
+             }
+         }
+         
+         body += "\r\n\r\n"
+     }
+     
+     guard let url = URL(string: "https://universal-background-removal.p.rapidapi.com/cutout/universal/common-image") else {
+         return
+     }
+     
+     var request = URLRequest(url: url)
+     request.httpMethod = "POST"
+     request.allHTTPHeaderFields = headers
+     request.httpBody = body.data(using: .utf8)
+     
+     let session = URLSession.shared
+     
+     let dataTask = session.dataTask(with: request) { (data, response, error) in
+         if let error = error {
+             print(error)
+         } else if let httpResponse = response as? HTTPURLResponse {
+             print(httpResponse)
+         }
+     }
+     
+     dataTask.resume()
+ }
+ */
