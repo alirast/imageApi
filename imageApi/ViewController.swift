@@ -82,6 +82,45 @@ class ViewController: UIViewController {
         
         dataTask.resume()
     }
+    
+    /* 401
+     func postAPI() {
+        guard let url = URL(string: "https://universal-background-removal.p.rapidapi.com/cutout/universal/common-image") else { return }
+        let headers = [
+            "content-type": "multipart/form-data; boundary=---011000010111000001101001",
+            "X-RapidAPI-Key": "0431c3340cmshafab1ef65145605p1f0ebbjsneba9be3ede79",
+            "X-RapidAPI-Host": "universal-background-removal.p.rapidapi.com"
+        ]
+        
+        let parameters = [
+            [
+                "name": "image",
+                "fileName": "people",
+                "contentType": "application/octet-stream",
+                "file": "[object File]"
+            ]
+        ]
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        guard let httpBody = try? JSONSerialization.data(withJSONObject: parameters) else { return }
+        request.httpBody = httpBody
+        request.addValue("multipart/form-data; boundary=---011000010111000001101001", forHTTPHeaderField: "content-type")
+        
+        let session = URLSession.shared
+        session.dataTask(with: request) { (data, response, error) in
+            if let response = response {
+                print("response", response)
+            }
+            
+            guard let data = data else { return }
+            do {
+                let json = try JSONSerialization.jsonObject(with: data, options: [])
+                print("json", json)
+            } catch {
+                print(error)
+            }
+        }.resume()
+    }*/
 }
 
 /*
