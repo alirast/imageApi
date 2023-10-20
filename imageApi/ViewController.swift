@@ -17,24 +17,43 @@ class ViewController: UIViewController {
         return imageView
     }()
     
+    private lazy var newImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(imageView)
-        setupConstraints()
-        
+        configureUI()
         postAPI()
+    }
+    
+    private func configureUI() {
+        view.addSubview(imageView)
+        view.addSubview(newImageView)
+        setupConstraints()
     }
     
     private func setupConstraints() {
         NSLayoutConstraint.activate([
             imageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            imageView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            imageView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
             imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5),
             imageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.7)
         ])
+        
+        NSLayoutConstraint.activate([
+            newImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            newImageView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 10),
+            newImageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 0.5),
+            newImageView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.7),
+            newImageView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -5)
+        ])
     }
     
-    func postAPI() {
+    private func postAPI() {
         let headers = [
             "content-type": "multipart/form-data; boundary=---011000010111000001101001",
             "X-RapidAPI-Key": "b17fb37ff3msh2a4c5dfe99530d0p1c86a6jsndfc55e574713",
@@ -87,11 +106,33 @@ class ViewController: UIViewController {
             do {
                 let json = try JSONSerialization.jsonObject(with: data)
                 print("JSON", json)
+                
+                self.parseJSON(json: json)
+                
+                
             } catch {
                 print("ERROR", error)
             }
         }
         
         dataTask.resume()
+    }
+    
+    private func parseJSON(json: Any) {
+        guard let jsonData = try? JSONSerialization.data(withJSONObject: json),
+              let response = try? JSONDecoder().decode(JSONResponse.self, from: jsonData),
+              let imageURL = URL(string: response.data.imageUrl) else {
+            return
+        }
+        
+        do {
+            let imageData = try Data(contentsOf: imageURL)
+            let image = UIImage(data: imageData)
+            DispatchQueue.main.async {
+                self.newImageView.image = image
+            }
+        } catch {
+            print("failed to load image")
+        }
     }
 }
